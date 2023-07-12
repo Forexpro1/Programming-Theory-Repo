@@ -335,9 +335,11 @@ MonoBehaviour:
   - {fileID: 1234604101423580107, guid: 5e60a0978fcf9df4eb3e106aa4db8666, type: 3}
   - {fileID: 2817590398247756415, guid: 557e4b453aeb01b4cbf9db14bb747ced, type: 3}
   - {fileID: 3207052047963042117, guid: d133509aa1749024cb112e400c1a52b5, type: 3}
+  cam: {fileID: 963194227}
   column: 8
   row: 8
   spacing: 2
+  lerpDuration: 4
 --- !u!4 &2128987287
 Transform:
   m_ObjectHideFlags: 0
