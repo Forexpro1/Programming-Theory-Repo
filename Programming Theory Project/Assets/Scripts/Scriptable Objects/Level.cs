@@ -13,13 +13,13 @@ public class Level : ScriptableObject
     public TileProperties[] boardLayout;
 
     [Header("Available Gems")]
-    public GameObject[] dots;
+    public GameObject[] gems;
 
     [Header("Score Goals")]
     public int[] scoreGoals;
 
     [Header("End Game Requirements")]
-    public EndGameRequirements endGameRequirements;
-    public BlankGoal[] levelGoals;
+    public GameModeSetting gameModeSetting;
+    public LevelGoalSetting[] levelGoalSettings;
 
 }

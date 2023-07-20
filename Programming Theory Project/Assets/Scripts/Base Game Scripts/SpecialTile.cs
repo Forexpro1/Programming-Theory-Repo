@@ -16,7 +16,7 @@ public class SpecialTile : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         if (hitPoints <= 0)
         {
@@ -25,7 +25,7 @@ public class SpecialTile : MonoBehaviour
                 goalManager.CompareGoal(this.gameObject.tag);
                 goalManager.UpdateGoals();
             }
-            Destroy(this.gameObject,5);
+            Destroy(this.gameObject);
         }
     }
     public virtual void TakeDamage(int damage)

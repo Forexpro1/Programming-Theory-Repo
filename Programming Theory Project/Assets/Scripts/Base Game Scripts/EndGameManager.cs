@@ -4,16 +4,17 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public enum GameType
+public enum GameMode
 {
     Moves,
-    Time
+    Time,
+    Battle
 }
 
 [System.Serializable]
-public class EndGameRequirements
+public class GameModeSetting
 {
-    public GameType gameType;
+    public GameMode gameMode;
     public int counterValue;
 }
 public class EndGameManager : MonoBehaviour
@@ -23,7 +24,7 @@ public class EndGameManager : MonoBehaviour
     public GameObject youWinPanel;
     public GameObject tryAgainPanel;
     public TMP_Text counter; 
-    public EndGameRequirements requirements;
+    public GameModeSetting gameModeSetting;
     public int currentCounterValue;
     private Board board;
     private FadePanelController fadePanelController;
@@ -34,12 +35,12 @@ public class EndGameManager : MonoBehaviour
     {
         board = FindObjectOfType<Board>();
         fadePanelController = FindObjectOfType<FadePanelController>();
-        SetGameType();
+        SetGameMode();
         SetupGame();
         
     }
 
-    void SetGameType()
+    void SetGameMode()
     {
         if (board.world !=null)
         {
@@ -47,7 +48,7 @@ public class EndGameManager : MonoBehaviour
             {
                 if (board.world.levels[board.level] != null)
                 {
-                    requirements = board.world.levels[board.level].endGameRequirements;
+                    gameModeSetting = board.world.levels[board.level].gameModeSetting;
 
                 }
 
@@ -58,8 +59,8 @@ public class EndGameManager : MonoBehaviour
 
     void SetupGame()
     {
-        currentCounterValue = requirements.counterValue;
-        if (requirements.gameType == GameType.Moves)
+        currentCounterValue = gameModeSetting.counterValue;
+        if (gameModeSetting.gameMode == GameMode.Moves)
         {
             movesLabel.SetActive(true);
             timeLabel.SetActive(false);
@@ -93,7 +94,7 @@ public class EndGameManager : MonoBehaviour
         board.currentState = GameState.win;
         currentCounterValue = 0;
         counter.text = "" + currentCounterValue;
-        fadePanelController.GameOver();
+        fadePanelController.SetGameOver();
     }
     public void LoseGame()
     {
@@ -101,12 +102,12 @@ public class EndGameManager : MonoBehaviour
         board.currentState = GameState.lose;
         currentCounterValue = 0;
         counter.text = "" + currentCounterValue;
-        fadePanelController.GameOver();
+        fadePanelController.SetGameOver();
     }
     // Update is called once per frame
     void Update()
     {
-        if (requirements.gameType == GameType.Time && currentCounterValue > 0)
+        if (gameModeSetting.gameMode == GameMode.Time && currentCounterValue > 0)
         {
             timerSeconds -= Time.deltaTime;
             if (timerSeconds <= 0)

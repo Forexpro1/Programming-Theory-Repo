@@ -19,76 +19,76 @@ public class MatchManager : MonoBehaviour
     {
         StartCoroutine(FindAllMatchesCo());
     }
-    private List<GameObject> IsAdjacentBomb(Gem dot1, Gem dot2, Gem dot3)
+    private List<GameObject> IsAdjacentBomb(Gem gem1, Gem gem2, Gem gem3)
     {
         List<GameObject> currentDots = new List<GameObject>();
-        if (dot1.isAdjacentBomb)
+        if (gem1.isAdjacentBomb)
         {
-            currentMatches.Union(GetAdjacentPieces(dot1.Column, dot1.Row));
+            currentMatches.Union(GetAdjacentPieces(gem1.Column, gem1.Row));
         }
-        if (dot2.isAdjacentBomb)
+        if (gem2.isAdjacentBomb)
         {
-            currentMatches.Union(GetAdjacentPieces(dot2.Column, dot2.Row));
+            currentMatches.Union(GetAdjacentPieces(gem2.Column, gem2.Row));
         }
-        if (dot3.isAdjacentBomb)
+        if (gem3.isAdjacentBomb)
         {
-            currentMatches.Union(GetAdjacentPieces(dot3.Column, dot3.Row));
+            currentMatches.Union(GetAdjacentPieces(gem3.Column, gem3.Row));
         }
         return currentDots;
     }
-    private List<GameObject> IsRowBomb(Gem dot1, Gem dot2, Gem dot3)
+    private List<GameObject> IsRowBomb(Gem gem1, Gem gem2, Gem gem3)
     {
         List<GameObject> currentDots = new List<GameObject>();
-        if (dot1.isRowBomb)
+        if (gem1.isRowBomb)
         {
-            currentMatches.Union(GetRowPieces(dot1.Row));
-            board.BombRow(dot1.Row);
+            currentMatches.Union(GetRowPieces(gem1.Row));
+            board.BombRowAffectingSpecialTiles(gem1.Row);
         }
-        if (dot2.isRowBomb)
+        if (gem2.isRowBomb)
         {
-            currentMatches.Union(GetRowPieces(dot2.Row));
-            board.BombRow(dot2.Row);
+            currentMatches.Union(GetRowPieces(gem2.Row));
+            board.BombRowAffectingSpecialTiles(gem2.Row);
         }
-        if (dot3.isRowBomb)
+        if (gem3.isRowBomb)
         {
-            currentMatches.Union(GetRowPieces(dot3.Row));
-            board.BombRow(dot3.Row);
+            currentMatches.Union(GetRowPieces(gem3.Row));
+            board.BombRowAffectingSpecialTiles(gem3.Row);
         }
         return currentDots;
     }
-    private List<GameObject> IsColumnBomb(Gem dot1, Gem dot2, Gem dot3)
+    private List<GameObject> IsColumnBomb(Gem gem1, Gem gem2, Gem gem3)
     {
         List<GameObject> currentDots = new List<GameObject>();
-        if (dot1.isColumnBomb)
+        if (gem1.isColumnBomb)
         {
-            currentMatches.Union(GetColumnPieces(dot1.Column));
-            board.BombColumn(dot1.Column);
+            currentMatches.Union(GetColumnPieces(gem1.Column));
+            board.BombColumnAffectingSpecialTiles(gem1.Column);
         }
-        if (dot2.isColumnBomb)
+        if (gem2.isColumnBomb)
         {
-            currentMatches.Union(GetColumnPieces(dot2.Column));
-            board.BombColumn(dot2.Column);
+            currentMatches.Union(GetColumnPieces(gem2.Column));
+            board.BombColumnAffectingSpecialTiles(gem2.Column);
         }
-        if (dot3.isColumnBomb)
+        if (gem3.isColumnBomb)
         {
-            currentMatches.Union(GetColumnPieces(dot3.Column));
-            board.BombColumn(dot3.Column);
+            currentMatches.Union(GetColumnPieces(gem3.Column));
+            board.BombColumnAffectingSpecialTiles(gem3.Column);
         }
         return currentDots;
     }
-    private void AddToListAndMatch(GameObject dot)
+    private void AddToListAndMatch(GameObject gem)
     {
-        if (!currentMatches.Contains(dot))
+        if (!currentMatches.Contains(gem))
         {
-            currentMatches.Add(dot);
+            currentMatches.Add(gem);
         }
-        dot.GetComponent<Gem>().isMatched = true;
+        gem.GetComponent<Gem>().isMatched = true;
     }
-    private void GetNearbyPieces(GameObject dot1, GameObject dot2, GameObject dot3)
+    private void GetNearbyPieces(GameObject gem1, GameObject gem2, GameObject gem3)
     {
-        AddToListAndMatch(dot1);
-        AddToListAndMatch(dot2);
-        AddToListAndMatch(dot3);
+        AddToListAndMatch(gem1);
+        AddToListAndMatch(gem2);
+        AddToListAndMatch(gem3);
     }
     private IEnumerator FindAllMatchesCo()
     {
@@ -101,22 +101,22 @@ public class MatchManager : MonoBehaviour
                 if (currentGameObject != null)
                 {
 
-                    Gem currentGameObjectDot = currentGameObject.GetComponent<Gem>();
+                    Gem currentGameObjectGem = currentGameObject.GetComponent<Gem>();
                     if (i > 0 && i < board.width-1)
                     {
                         GameObject leftGameObject = board.playingBoard[i - 1, j];
                         GameObject rightGameObject = board.playingBoard[i + 1, j];
+
                         if (leftGameObject != null && rightGameObject != null)
                         {
-                            Gem rightGameObjectDot = rightGameObject.GetComponent<Gem>();
-                            Gem leftGameObjectDot = leftGameObject.GetComponent<Gem>();
+                            Gem rightGameObjectGem = rightGameObject.GetComponent<Gem>();
+                            Gem leftGameObjectGem = leftGameObject.GetComponent<Gem>();
                             
                             if (leftGameObject.tag == currentGameObject.tag && rightGameObject.tag == currentGameObject.tag)
                             {
-                                currentMatches.Union(IsRowBomb(leftGameObjectDot, currentGameObjectDot, rightGameObjectDot));
-                                currentMatches.Union(IsColumnBomb(leftGameObjectDot, currentGameObjectDot, rightGameObjectDot));
-                                currentMatches.Union(IsAdjacentBomb(leftGameObjectDot, currentGameObjectDot, rightGameObjectDot));
-                               // Debug.Log("tags matched");
+                                currentMatches.Union(IsRowBomb(leftGameObjectGem, currentGameObjectGem, rightGameObjectGem));
+                                currentMatches.Union(IsColumnBomb(leftGameObjectGem, currentGameObjectGem, rightGameObjectGem));
+                                currentMatches.Union(IsAdjacentBomb(leftGameObjectGem, currentGameObjectGem, rightGameObjectGem));
                                 GetNearbyPieces(leftGameObject, currentGameObject, rightGameObject);  
                             }  
                         }    
@@ -124,18 +124,18 @@ public class MatchManager : MonoBehaviour
                     if (j > 0 && j < board.height - 1)
                     {
                         GameObject upwardGameObject = board.playingBoard[i, j + 1];
-
                         GameObject downwardGameObject = board.playingBoard[i, j - 1];
+
                         if (upwardGameObject != null && downwardGameObject != null)
                         {
-                            Gem downDot = downwardGameObject.GetComponent<Gem>();
-                            Gem upDot = upwardGameObject.GetComponent<Gem>();
+                            Gem downGem = downwardGameObject.GetComponent<Gem>();
+                            Gem upGem = upwardGameObject.GetComponent<Gem>();
 
                             if (upwardGameObject.tag == currentGameObject.tag && downwardGameObject.tag == currentGameObject.tag)
                             {
-                                currentMatches.Union(IsColumnBomb(upDot, currentGameObjectDot, downDot));
-                                currentMatches.Union(IsRowBomb(upDot, currentGameObjectDot, downDot));
-                                currentMatches.Union(IsAdjacentBomb(upDot, currentGameObjectDot, downDot));
+                                currentMatches.Union(IsColumnBomb(upGem, currentGameObjectGem, downGem));
+                                currentMatches.Union(IsRowBomb(upGem, currentGameObjectGem, downGem));
+                                currentMatches.Union(IsAdjacentBomb(upGem, currentGameObjectGem, downGem));
                                 GetNearbyPieces(upwardGameObject, currentGameObject, downwardGameObject);
                             } 
                         }
@@ -157,7 +157,7 @@ public class MatchManager : MonoBehaviour
                     //check tag on that do
                     if (board.playingBoard[i,j].tag == color)
                     {
-                        //set that dot to be matched
+                        //set that gem to be matched
                         board.playingBoard[i, j].GetComponent<Gem>().isMatched = true;
                     }
                 }

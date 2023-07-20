@@ -20,12 +20,16 @@ public class HintManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        hintDelaySeconds -= Time.deltaTime;
-        if (hintDelaySeconds <= 0 && currentHint == null)
+        if (board.currentState == GameState.move)
         {
-            MarkHint();
-            hintDelaySeconds = hintDelay;
-        }
+            hintDelaySeconds -= Time.deltaTime;
+            if (hintDelaySeconds <= 0 && currentHint == null)
+            {
+                MarkHint();
+                hintDelaySeconds = hintDelay;
+            }
+
+        } 
     }
 
     // First, I want to find all possible matches on the board

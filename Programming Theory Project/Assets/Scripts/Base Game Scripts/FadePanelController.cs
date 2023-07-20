@@ -9,7 +9,7 @@ public class FadePanelController : MonoBehaviour
     public Animator gameInfoAnim;
     public float gameStartDelay = 1f;
 
-    public void OK()
+    public void OK() // method for the ok button
     {
         if (panelAnim != null && gameInfoAnim != null)
         {
@@ -20,7 +20,7 @@ public class FadePanelController : MonoBehaviour
         } 
     }
 
-    public void GameOver()
+    public void SetGameOver()
     {
         panelAnim.SetBool("Out", false);
         panelAnim.SetBool("Game Over", true);

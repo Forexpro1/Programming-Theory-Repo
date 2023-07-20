@@ -39,12 +39,13 @@ public class Gem : MonoBehaviour
             
         }
     }
+    public bool isMatched = false;
+    public GameObject otherGem;
     
     private int previousColumn;
     private int previousRow;
     private int targetX;
     private int targetY;
-    public bool isMatched = false;
 
     private Animator anim;
     private float shineDelay;
@@ -53,17 +54,16 @@ public class Gem : MonoBehaviour
     private HintManager hintManager;
     private MatchManager findMatches;
     private Board board;
-    public GameObject otherGem;
     private Vector2 firstTouchPosition = Vector2.zero;
     private Vector2 finalTouchPosition = Vector2.zero;
     private Vector2 tempPosition;
-
     private float swipeAngle = 0f;
     public float SwipeAngle
     {
         get {return swipeAngle;}
         set {swipeAngle = value;}
     }
+
     [Header("Speed and Swipe Variables")]
     public float swipeResist = 1f;
     public float dotLerpingSpeed;
@@ -96,7 +96,7 @@ public class Gem : MonoBehaviour
         findMatches = FindObjectOfType<MatchManager>();
        
     }
-    // this is For testing and Debug Only
+    /* this is For testing and Debug Only
     private void OnMouseOver()
     {
         if (Input.GetMouseButtonDown(1))
@@ -107,6 +107,9 @@ public class Gem : MonoBehaviour
             // this.tag = "Color";
         }
     }
+    */
+
+
     // Update is called once per frame
     
     void Update()
@@ -211,21 +214,19 @@ public class Gem : MonoBehaviour
     }
     private void OnMouseUp()
     {
-        //if (ownerOfDot == OwnerOfDot.player1)
-        //{
+        
             if (board.currentState == GameState.move)
             {
                 finalTouchPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 CalculateAngle();
             }
-        //} 
     }
     void CalculateAngle()
     {
         if (Mathf.Abs( finalTouchPosition.y - firstTouchPosition.y) > swipeResist || Mathf.Abs(finalTouchPosition.x - firstTouchPosition.x) > swipeResist)
         {
             board.currentState = GameState.wait;
-            swipeAngle = Mathf.Atan2(finalTouchPosition.y - firstTouchPosition.y, finalTouchPosition.x - firstTouchPosition.x) * 180 / Mathf.PI;
+            swipeAngle = Mathf.Atan2(finalTouchPosition.y - firstTouchPosition.y, finalTouchPosition.x - firstTouchPosition.x) *Mathf.Rad2Deg; 
             GetTheDirectionFromAngle();
             board.currentGem = this;
         }
@@ -262,11 +263,18 @@ public class Gem : MonoBehaviour
     void MoveTheGem(Vector2 direction)
     {
         otherGem = board.playingBoard[Column +(int)direction.x, Row + (int)direction.y];
+
+        // storing these variables in case there is no match.
         previousRow = Row;
         previousColumn = Column;
+        CheckForLockTiles(direction);
 
+        
+    }
+    private void CheckForLockTiles(Vector2 direction)
+    {
         //checking if locktiles exist at location.
-        if (board.lockTiles[Column, Row] == null && board.lockTiles[Column + (int)direction.x, Row + (int)direction.y] == null) 
+        if (board.lockTiles[Column, Row] == null && board.lockTiles[Column + (int)direction.x, Row + (int)direction.y] == null)
         {
             if (otherGem != null)
             {
@@ -293,7 +301,7 @@ public class Gem : MonoBehaviour
         // Validating if the move was legal by the rules.
         if (otherGem != null)
         {
-            if (!isMatched && !otherGem.GetComponent<Gem>().isMatched)
+            if (!isMatched && !otherGem.GetComponent<Gem>().isMatched) // If both don't match, then return back to original location
             {
                 otherGem.GetComponent<Gem>().row = row;
                 otherGem.GetComponent<Gem>().column = column;
@@ -303,18 +311,16 @@ public class Gem : MonoBehaviour
                 board.currentGem = null;
                 board.currentState = GameState.move;
             }
-            else
+            else // else take a counter from endGame Manager
             {
                 if (endGameManager != null)
                 {
-                    if (endGameManager.requirements.gameType == GameType.Moves)
+                    if (endGameManager.gameModeSetting.gameMode == GameMode.Moves)
                     {
                         endGameManager.DecreaseCounterValue();
                     }
                 }
                 StartCoroutine(board.DestroyMatchesCo());
-                
-
             }
         }
         
@@ -380,6 +386,7 @@ public class Gem : MonoBehaviour
             }
             otherGem.GetComponent<Gem>().isMatched = true;
         }
+
         // Checking if one piece is color and other isRow
         else if ((isColorBomb && otherGem.GetComponent<Gem>().isRowBomb) || (isRowBomb && otherGem.GetComponent<Gem>().isColorBomb))
         {
@@ -397,6 +404,7 @@ public class Gem : MonoBehaviour
             }
             
         }
+
         // Checking if one piece is color and other isColumn
         else if ((isColorBomb && otherGem.GetComponent<Gem>().isColumnBomb) || (isColumnBomb && otherGem.GetComponent<Gem>().isColorBomb))
         {
@@ -413,6 +421,7 @@ public class Gem : MonoBehaviour
                 otherGem.GetComponent<Gem>().isMatched = true;
             }
         }
+
         //Checking if One Piece is Color and other isAdjacent
         else if ((isColorBomb && otherGem.GetComponent<Gem>().isAdjacentBomb) || (isAdjacentBomb && otherGem.GetComponent<Gem>().isColorBomb))
         {
@@ -429,6 +438,7 @@ public class Gem : MonoBehaviour
                 otherGem.GetComponent<Gem>().isMatched = true;
             }
         }
+
         // Checking if Piece is Color and other is Normal
         else if (isColorBomb)
         {
@@ -436,6 +446,7 @@ public class Gem : MonoBehaviour
             findMatches.MatchPiecesOfColor(otherGem.tag);
             isMatched = true;
         }
+
         // Checking if other piece is Color and this is Normal
         else if (otherGem.GetComponent<Gem>().isColorBomb)
         {
@@ -443,26 +454,31 @@ public class Gem : MonoBehaviour
             findMatches.MatchPiecesOfColor(this.gameObject.tag);
             otherGem.GetComponent<Gem>().isMatched = true;
         }
+
         // Checking if this piece isRow and other isRow or isColumn
         else if (isRowBomb && (otherGem.GetComponent<Gem>().isRowBomb || otherGem.GetComponent<Gem>().isColumnBomb))
         {
             GetRowAndColoumnSpecial(this.column, this.row);
         }
+
         // Checking if this piece isColumn and other isRow or isColumn
         else if (isColumnBomb && (otherGem.GetComponent<Gem>().isRowBomb || otherGem.GetComponent<Gem>().isColumnBomb))
         {
             GetRowAndColoumnSpecial(this.column, this.row);
         }
-        // Checking if this piece isAdjacent and other isrow or iscolumn
+
+        // Checking if this piece isAdjacent and other "isrow or iscolumn"
         else if (isAdjacentBomb && (otherGem.GetComponent<Gem>().isRowBomb || otherGem.GetComponent<Gem>().isColumnBomb))
         {
             Get3RowsAnd3ColoumnSpecial(this.column,this.row);
         }
-        // Checking if this piece isRow or isColumn and other isAdjacent
+
+        // Checking if this piece "isRow or isColumn" and other isAdjacent
         else if ((isRowBomb || isColumnBomb) && otherGem.GetComponent<Gem>().isAdjacentBomb)
         {
             Get3RowsAnd3ColoumnSpecial(this.column, this.row);
         }
+        // Checking if this piece "isAdjacent" and other isAdjacent
         else if (isAdjacentBomb && otherGem.GetComponent<Gem>().isAdjacentBomb)
         {
             GetMegaAdjacentPieces(this.column,this.row);

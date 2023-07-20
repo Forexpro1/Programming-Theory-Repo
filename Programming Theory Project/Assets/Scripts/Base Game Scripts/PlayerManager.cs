@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum OwnerOfDot
+public enum GemOwner
 {
     player1,
     player2,
@@ -11,7 +11,7 @@ public enum OwnerOfDot
 [System.Serializable]
 public class Player
 {
-    public OwnerOfDot ownerofDot;
+    public GemOwner gemOwner;
     public float health;
 
 }
@@ -38,8 +38,8 @@ public class PlayerManager : MonoBehaviour
     {
         Debug.Log("Setup complete");
         players[0].health = 100f;
-        players[0].ownerofDot = OwnerOfDot.player1;
+        players[0].gemOwner = GemOwner.player1;
         players[1].health = 100f;
-        players[1].ownerofDot = OwnerOfDot.player2; 
+        players[1].gemOwner = GemOwner.player2; 
     } 
 }

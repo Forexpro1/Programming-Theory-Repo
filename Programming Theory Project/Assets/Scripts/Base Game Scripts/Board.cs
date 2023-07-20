@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/* ATTENTION! SOME CREDIT GOES TO "MISTER TAFT CREATES" FOR  HIS TURORIAL ON 3D MATCH PUZZLES FOR THE INITIAL SETUP OF HOW TO CODE SUCH A GAME.
+ * OUR CODES HAVE SIMLIAR WORKFLOWS, BUT I CHANGED MANY BEHAVIORS.
+ * HE CAN BE FOUND ON "YOUTUBE" FOR REFERENCE.  
+ * */
+
 public enum GameState
 {
     wait,
@@ -63,18 +68,21 @@ public class Board : MonoBehaviour
     private bool [,] blankSpaces;
     private SpecialTile[,] concreteTiles;
     private SpecialTile[,] breakableTiles;
-    public SpecialTile[,] lockTiles;
     private SpecialTile[,] slimeTiles;
+    [HideInInspector]
+    public SpecialTile[,] lockTiles;
     public GameObject[,] playingBoard;
-    
 
     [HideInInspector]
     public Gem currentGem;
 
     [Header("Gem Properties etc")]
-    public MatchType matchType;
+
     public int basePieceValue = 20;
     public int[] scoreGoals;
+
+    [HideInInspector]
+    public MatchType matchType;
     private int streakValue = 1;
     private int loopCount = 0;
     private bool makeSlime = true;
@@ -101,7 +109,7 @@ public class Board : MonoBehaviour
                 {
                     width = world.levels[level].width;
                     height = world.levels[level].height;
-                    gemPrefabsArray = world.levels[level].dots;
+                    gemPrefabsArray = world.levels[level].gems;
                     scoreGoals = world.levels[level].scoreGoals;
                     boardLayout = world.levels[level].boardLayout;
                 }
@@ -209,14 +217,8 @@ public class Board : MonoBehaviour
         }
     }
 
-    private void Setup()
+    private void GenerateBackgroundTiles()
     {
-        GenerateBlankSpaces();
-        GenerateBreakableTiles();
-        GenerateLockTiles();
-        GenerateConcreteTiles();
-        GenerateSlimeTiles();
-
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
@@ -226,14 +228,14 @@ public class Board : MonoBehaviour
 
                     Vector2 tempPositionP1 = new Vector2(i, j + yDistanceOffSet);
                     Vector2 tilePositionP1 = new Vector2(i, j);
-                  
+
 
                     GameObject backgroundTileP1 = Instantiate(tilePrefab, tilePositionP1, Quaternion.identity) as GameObject;
-                   
+
                     backgroundTileP1.transform.parent = this.transform;
-                   
+
                     backgroundTileP1.name = "( " + i + "," + j + " )";
-                   
+
                     int randomGem = Random.Range(0, gemPrefabsArray.Length);
 
                     int maxIterations = 0;
@@ -247,34 +249,45 @@ public class Board : MonoBehaviour
                     gem.GetComponent<Gem>().Row = j;
                     gem.GetComponent<Gem>().Column = i;
                     gem.transform.parent = this.transform;
-                   
+
                     playingBoard[i, j] = gem;
                 }
             }
 
         }
     }
+    // EXAMPLE OF ABSTRACTION
+    private void Setup()
+    {
+        GenerateBlankSpaces();
+        GenerateBreakableTiles();
+        GenerateLockTiles();
+        GenerateConcreteTiles();
+        GenerateSlimeTiles();
+        GenerateBackgroundTiles();
+    }
     public  IEnumerator DestroyMatchesCo()
     {
         yield return new WaitForSeconds(.25f);
-        // How many elements are in the matched pieces list from findmatches?
+        
         if (matchManager.currentMatches.Count >= 4)
         {
             CheckToMakeBombs();
         }
         matchManager.currentMatches.Clear();
+
         for (int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
             {
                 if (playingBoard[i,j] != null)
                 {
-                    DestroyMatchesAt(i, j);
+                    DestroyMatchesAt(i, j); // If bool "isMatched" in Gem.cs is true. it will destroys gameobject and nullify in the playingBoardarray.
                 }
             }
         }
         
-        StartCoroutine(DecreaseRowCo2());
+        StartCoroutine(DecreaseRowCo());
     }
     private void CheckToMakeBombs()
     {
@@ -577,7 +590,7 @@ public class Board : MonoBehaviour
         }
         
     }
-    private IEnumerator DecreaseRowCo2()
+    private IEnumerator DecreaseRowCo()
     {
         /* Moving every Gem down as long as each coordinate is not a blankSpace,
         the dot at location is empty(destroyed & null),not a concrete Tile,
@@ -713,7 +726,6 @@ public class Board : MonoBehaviour
     {
 
         matchManager.FindAllMatches();
-        //matchManager.LookForMatches();
         
         for (int i = 0; i < width; i++)
         {
@@ -753,17 +765,17 @@ public class Board : MonoBehaviour
         int loops = 0;
         while (!slime && loops < 200)
         {
-            int newX = Random.Range(0, width);
-            int newY = Random.Range(0,height);
-            if (slimeTiles[newX,newY])
+            int randomX = Random.Range(0, width);
+            int randomY = Random.Range(0,height);
+            if (slimeTiles[randomX,randomY])
             {
-                Vector2 adjacent = CheckForAdjacents(newX,newY);
+                Vector2 adjacent = CheckForAdjacents(randomX,randomY);
                 if (adjacent != Vector2.zero)
                 {
-                    Destroy(playingBoard[newX + (int) adjacent.x, newY + (int) adjacent.y]);
-                    Vector2 tempPosition = new Vector2(newX + (int)adjacent.x, newY + (int)adjacent.y);
+                    Destroy(playingBoard[randomX + (int) adjacent.x, randomY + (int) adjacent.y]);
+                    Vector2 tempPosition = new Vector2(randomX + (int)adjacent.x, randomY + (int)adjacent.y);
                     GameObject tile = Instantiate(SlimePiecePrefab, tempPosition, Quaternion.identity);
-                    slimeTiles[newX + (int)adjacent.x, newY + (int)adjacent.y] = tile.GetComponent<SpecialTile>();
+                    slimeTiles[randomX + (int)adjacent.x, randomY + (int)adjacent.y] = tile.GetComponent<SpecialTile>();
                     slime = true;
                 }
             }   
@@ -937,7 +949,7 @@ public class Board : MonoBehaviour
     }
 
     // These method used in MatchManager
-    public void BombRow(int row)
+    public void BombRowAffectingSpecialTiles(int row)
     {
         for (int i = 0; i < width; i++)
         {
@@ -960,7 +972,7 @@ public class Board : MonoBehaviour
             }
         }
     }
-    public void BombColumn(int column)
+    public void BombColumnAffectingSpecialTiles(int column)
     {
 
         for (int j = 0; j < height; j++)

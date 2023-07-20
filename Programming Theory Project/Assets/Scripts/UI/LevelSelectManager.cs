@@ -33,12 +33,7 @@ public class LevelSelectManager : MonoBehaviour
         currentPanel = panels[page];
         panels[page].SetActive(true);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
     public void PageRight()
     {
         if (page< panels.Length -1)

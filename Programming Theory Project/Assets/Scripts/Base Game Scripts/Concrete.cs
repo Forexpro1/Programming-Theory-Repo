@@ -23,15 +23,6 @@ public class Concrete : SpecialTile
     {
         sprite.sprite = concreteCrackSprite;
     }
-    void MakeLighter()
-    {
-        // take the current color
-        Color color = sprite.color;
-        // get the current color alpha value
-        float newAlpha = color.a * .5f;
-        sprite.color = new Color(color.r, color.g, color.b, newAlpha);
-
-
-    }
+    
 
 }

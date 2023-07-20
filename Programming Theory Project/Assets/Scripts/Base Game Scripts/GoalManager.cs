@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class BlankGoal
+public class LevelGoalSetting
 {
     public int numberNeeded;
     public int numberCollected;
@@ -12,7 +12,7 @@ public class BlankGoal
 }
 public class GoalManager : MonoBehaviour
 {
-    public BlankGoal[] levelGoals;
+    public LevelGoalSetting[] levelGoalSettings;
     public List<GoalPanel> currentGoals = new List<GoalPanel>();
     public GameObject goalPrefab;
     public GameObject goalIntroParent;
@@ -39,10 +39,10 @@ public class GoalManager : MonoBehaviour
                 {
                     if (board.world.levels[board.level] != null)
                     {
-                        levelGoals = board.world.levels[board.level].levelGoals;
-                        for (int i = 0; i < levelGoals.Length; i++)
+                        levelGoalSettings = board.world.levels[board.level].levelGoalSettings;
+                        for (int i = 0; i < levelGoalSettings.Length; i++)
                         {
-                            levelGoals[i].numberCollected = 0;
+                            levelGoalSettings[i].numberCollected = 0;
                         }
                     }
                 }
@@ -52,45 +52,43 @@ public class GoalManager : MonoBehaviour
     }
     void SetupGoals()
     {
-        for (int i = 0; i < levelGoals.Length; i++)
+        for (int i = 0; i < levelGoalSettings.Length; i++)
         {
             // Create a new Goal Panel at the goalIntroParent position
             GameObject goal = Instantiate(goalPrefab, goalIntroParent.transform.position, Quaternion.identity);
             goal.transform.SetParent(goalIntroParent.transform);
             // Set the image and text of the goal;
             GoalPanel panel = goal.GetComponent<GoalPanel>();
-            panel.thisSprite = levelGoals[i].goalSprite;
-            panel.thisString = "0/" + levelGoals[i].numberNeeded;
+            panel.thisSprite = levelGoalSettings[i].goalSprite;
+            panel.thisString = "0/" + levelGoalSettings[i].numberNeeded;
 
             // Create a new goal Panel at the goalGameParent position
             GameObject gameGoal = Instantiate(goalPrefab, goalGameParent.transform.position, Quaternion.identity);
             gameGoal.transform.SetParent(goalGameParent.transform);
             panel = gameGoal.GetComponent<GoalPanel>();
             currentGoals.Add(panel);
-            panel.thisSprite = levelGoals[i].goalSprite;
-            panel.thisString = "0/" + levelGoals[i].numberNeeded;
+            panel.thisSprite = levelGoalSettings[i].goalSprite;
+            panel.thisString = "0/" + levelGoalSettings[i].numberNeeded;
         }
     }
 
     public void UpdateGoals()
     {
         int goalsCompleted = 0;
-        for (int i = 0; i < levelGoals.Length; i++)
+        for (int i = 0; i < levelGoalSettings.Length; i++)
         {
-            currentGoals[i].thisText.text = "" + levelGoals[i].numberCollected +"/" +levelGoals[i].numberNeeded;
-            if (levelGoals[i].numberCollected >= levelGoals[i].numberNeeded)
+            currentGoals[i].thisText.text = "" + levelGoalSettings[i].numberCollected +"/" +levelGoalSettings[i].numberNeeded;
+            if (levelGoalSettings[i].numberCollected >= levelGoalSettings[i].numberNeeded)
             {
                 goalsCompleted++;
-                currentGoals[i].thisText.text = "" + levelGoals[i].numberNeeded + "/" + levelGoals[i].numberNeeded;
+                currentGoals[i].thisText.text = "" + levelGoalSettings[i].numberNeeded + "/" + levelGoalSettings[i].numberNeeded;
             }
         }
-        if (goalsCompleted >= levelGoals.Length)
+        if (goalsCompleted >= levelGoalSettings.Length)
         {
             if (endGameManager != null)
             {
-                Debug.Log("YOU WIN!");
                 endGameManager.WinGame();
-
             }
             
         }
@@ -99,11 +97,11 @@ public class GoalManager : MonoBehaviour
 
     public void CompareGoal (string goalToCompare)
     {
-        for (int i = 0; i < levelGoals.Length; i++)
+        for (int i = 0; i < levelGoalSettings.Length; i++)
         {
-            if (goalToCompare == levelGoals[i].matchValue)
+            if (goalToCompare == levelGoalSettings[i].matchValue)
             {
-                levelGoals[i].numberCollected++;
+                levelGoalSettings[i].numberCollected++;
             }
         }
     }

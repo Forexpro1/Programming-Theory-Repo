@@ -6,7 +6,7 @@ using TMPro;
 
 public class LevelButton : MonoBehaviour
 {
-    [Header("Active Stuff")]
+    [Header("Button Data")]
     public bool isActive;
     public Sprite activeSprite;
     public Sprite lockedSprite;
@@ -84,7 +84,6 @@ public class LevelButton : MonoBehaviour
     {
         levelText.text = "" + level;
     }
-    // Update is called once per frame
    
 
     public void ConfirmPanel(int level)
