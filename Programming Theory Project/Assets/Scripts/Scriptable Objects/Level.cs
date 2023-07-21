@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Used like a Template for making Levels much faster with all need criteria. 
+
 [CreateAssetMenu(fileName ="World",menuName ="Level")]
 public class Level : ScriptableObject
 {

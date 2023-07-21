@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// This Controls All Game Pieces called Gems.
+
 public class Gem : MonoBehaviour
 {
     private int column;
@@ -48,6 +50,7 @@ public class Gem : MonoBehaviour
     private int targetY;
 
     private Animator anim;
+    public Rigidbody2D rb;
     private float shineDelay;
     private float shineDelaySeconds;
     private EndGameManager endGameManager;
@@ -90,6 +93,7 @@ public class Gem : MonoBehaviour
         shineDelay = Random.Range(8f, 16f);
         shineDelaySeconds = shineDelay;
         anim = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
         endGameManager = FindObjectOfType<EndGameManager>();
         hintManager = FindObjectOfType<HintManager>();
         board = GameObject.FindWithTag("Board").GetComponent<Board>();
@@ -114,22 +118,25 @@ public class Gem : MonoBehaviour
     
     void Update()
     {
-        
-        targetX = Column;
-        targetY = Row;
 
-        // EXAMPLE OF ABSTRACTION!!!
-        Shine();
-           
-        if (Mathf.Abs(targetX - transform.position.x) > 0)
+        if (gameObject.GetComponent<Collider2D>().enabled == true)
         {
-            CheckDistanceX();
+
+            targetX = Column;
+            targetY = Row;
+
+            // EXAMPLE OF ABSTRACTION!!!
+            Shine();
+
+            if (Mathf.Abs(targetX - transform.position.x) > 0)
+            {
+                CheckDistanceX();
+            }
+            if (Mathf.Abs(targetY - transform.position.y) > 0)
+            {
+                CheckDistanceY();
+            }
         }
-        if (Mathf.Abs(targetY - transform.position.y) > 0)
-        {
-            CheckDistanceY();
-        }
-       
     }
     void Shine()
     {
@@ -147,6 +154,7 @@ public class Gem : MonoBehaviour
         //Move Towards the TargetX
         tempPosition = new Vector2(targetX, transform.position.y);
         transform.position = Vector2.Lerp(transform.position, tempPosition, dotLerpingSpeed);
+        
 
         if (board.playingBoard[Column, Row] != this.gameObject)
         {
@@ -297,7 +305,7 @@ public class Gem : MonoBehaviour
     public IEnumerator CheckMoveCo()
     {
         CheckForSpecials();
-        yield return new WaitForSeconds(.25f);
+        yield return new WaitForSeconds(.5f);
         // Validating if the move was legal by the rules.
         if (otherGem != null)
         {

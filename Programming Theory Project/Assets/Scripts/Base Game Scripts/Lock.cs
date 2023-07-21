@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//Used on the Locks for additional challange on player
 
 // Example of Inheritance!!!
 public class Lock : SpecialTile

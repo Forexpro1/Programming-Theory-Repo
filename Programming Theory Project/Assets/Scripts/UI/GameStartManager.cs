@@ -1,30 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
+// used for the Title Screen and button functions
 
 public class GameStartManager : MonoBehaviour
 {
-    public GameObject startPanel;
-    public GameObject levelPanel;
-    
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        startPanel.SetActive(true);
-        levelPanel.SetActive(false);
-    }
-
+   
     public void PlayGame()
     {
-        startPanel.SetActive(false);
-        levelPanel.SetActive(true);
+        SceneManager.LoadSceneAsync("Level Select", LoadSceneMode.Single);
     }
 
     public void Home()
     {
-        startPanel.SetActive(true);
-        levelPanel.SetActive(false);
+        SceneManager.LoadSceneAsync("Title", LoadSceneMode.Single);
     }
-    
+    public void Exit()
+    {
+       Application.Quit();
+    }
+
 }

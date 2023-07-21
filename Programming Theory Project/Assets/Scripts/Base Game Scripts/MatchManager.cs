@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
+// This is the ConerStone Script for all Matching to take place by adding all common tags of 3 or more in a list.
+
 public class MatchManager : MonoBehaviour
 {
     public Board board;
@@ -176,19 +178,19 @@ public class MatchManager : MonoBehaviour
                     //check tag on that do
                     if (board.playingBoard[i, j].tag == color  && type == "Row")
                     {
-                        //set that dot to be matched
+                        //set that gem to be matched
                         board.playingBoard[i, j].GetComponent<Gem>().isMatched = false;
                         board.playingBoard[i, j].GetComponent<Gem>().MakeRowBomb();
                     }
                     if (board.playingBoard[i, j].tag == color && type == "Column")
                     {
-                        //set that dot to be matched
+                        //set that gem to be matched
                         board.playingBoard[i, j].GetComponent<Gem>().isMatched = false;
                         board.playingBoard[i, j].GetComponent<Gem>().MakeColumnBomb();
                     }
                     if (board.playingBoard[i, j].tag == color && type == "Adjacent")
                     {
-                        //set that dot to be matched
+                        //set that gem to be matched
                         board.playingBoard[i, j].GetComponent<Gem>().isMatched = false;
                         board.playingBoard[i, j].GetComponent<Gem>().MakeAdjacentBomb();
                     }
@@ -198,7 +200,7 @@ public class MatchManager : MonoBehaviour
     }
     List<GameObject> GetAdjacentPieces(int column, int row)
     {
-        List<GameObject> dots = new List<GameObject>();
+        List<GameObject> gems = new List<GameObject>();
         for (int i = column - 1; i <= column+1; i++)
         {
             for (int j = row - 1; j <= row + 1; j++)
@@ -208,88 +210,88 @@ public class MatchManager : MonoBehaviour
                 {
                     if (board.playingBoard[i,j] != null)
                     {
-                        Gem dot = board.playingBoard[i, j].GetComponent<Gem>();
-                        if (dot.isRowBomb)
+                        Gem gem = board.playingBoard[i, j].GetComponent<Gem>();
+                        if (gem.isRowBomb)
                         {
-                            dots.Union(GetRowPieces(i)).ToList();
+                            gems.Union(GetRowPieces(i)).ToList();
                         }
-                        if (dot.isColorBomb)
+                        if (gem.isColorBomb)
                         {
                             MatchPiecesOfColor(board.gemPrefabsArray[Random.Range(0, board.gemPrefabsArray.Length)].tag);
                         }
-                        dots.Add(board.playingBoard[i, j]);
+                        gems.Add(board.playingBoard[i, j]);
                         board.playingBoard[i, j].GetComponent<Gem>().isMatched = true;
-                        if (dot.isAdjacentBomb)
+                        if (gem.isAdjacentBomb)
                         {
-                            dots.Remove(board.playingBoard[i, j]);
+                            gems.Remove(board.playingBoard[i, j]);
                             board.playingBoard[i, j].GetComponent<Gem>().isMatched = false;
                             board.playingBoard[i, j].GetComponent<Gem>().isAdjacentBomb = false;
                             Transform transMarker = board.playingBoard[i, j].transform.Find("Adjacent Marker(Clone)");
                             transMarker.parent = null;
                             Destroy(transMarker.gameObject);
 
-                            dots.Union(GetAdjacentPieces(i, j)).ToList();  
+                            gems.Union(GetAdjacentPieces(i, j)).ToList();  
                         }
                     }  
                 }
             }
         }
-        return dots;
+        return gems;
     }
     
     List<GameObject> GetColumnPieces(int column)
     {
-        List<GameObject> dots = new List<GameObject>();
+        List<GameObject> gems = new List<GameObject>();
         for (int i = 0; i < board.height; i++)
         {
             if (board.playingBoard[column, i] != null)
             {
-                Gem dot = board.playingBoard[column, i].GetComponent<Gem>();
-                if (dot.isRowBomb)
+                Gem gem = board.playingBoard[column, i].GetComponent<Gem>();
+                if (gem.isRowBomb)
                 {
-                    dots.Union(GetRowPieces(i)).ToList();
+                    gems.Union(GetRowPieces(i)).ToList();
                 }
-                if (dot.isAdjacentBomb)
+                if (gem.isAdjacentBomb)
                 {
-                    dots.Union(GetAdjacentPieces(column,i)).ToList();
+                    gems.Union(GetAdjacentPieces(column,i)).ToList();
                 }
-                if (dot.isColorBomb)
+                if (gem.isColorBomb)
                 {
                     MatchPiecesOfColor(board.gemPrefabsArray[Random.Range(0,board.gemPrefabsArray.Length)].tag );
                 }
-                dots.Add(board.playingBoard[column, i]);
-                dot.isMatched = true;
+                gems.Add(board.playingBoard[column, i]);
+                gem.isMatched = true;
             }
         }
 
-        return dots;
+        return gems;
     }
     List<GameObject> GetRowPieces(int row)
     {
-        List<GameObject> dots = new List<GameObject>();
+        List<GameObject> gems = new List<GameObject>();
         for (int i = 0; i < board.width; i++)
         {
             if (board.playingBoard[i, row] != null)
             {
-                Gem dot = board.playingBoard[i, row].GetComponent<Gem>();
-                if (dot.isColumnBomb)
+                Gem gem = board.playingBoard[i, row].GetComponent<Gem>();
+                if (gem.isColumnBomb)
                 {
-                    dots.Union(GetColumnPieces(i)).ToList();
+                    gems.Union(GetColumnPieces(i)).ToList();
                 }
-                if (dot.isAdjacentBomb)
+                if (gem.isAdjacentBomb)
                 {
-                    dots.Union(GetAdjacentPieces(i, row)).ToList();
+                    gems.Union(GetAdjacentPieces(i, row)).ToList();
                 }
-                if (dot.isColorBomb)
+                if (gem.isColorBomb)
                 {
                     MatchPiecesOfColor(board.gemPrefabsArray[Random.Range(0, board.gemPrefabsArray.Length)].tag);
                 }
-                dots.Add(board.playingBoard[i, row]);
-                dot.isMatched = true;
+                gems.Add(board.playingBoard[i, row]);
+                gem.isMatched = true;
             }
         }
 
-        return dots;
+        return gems;
     }
     public void IsItARowOrColumn(MatchType matchType)
     {
@@ -317,21 +319,21 @@ public class MatchManager : MonoBehaviour
             // is other piece match matched?
             else if (board.currentGem.otherGem != null)
             {
-                Gem otherDot = board.currentGem.otherGem.GetComponent<Gem>();
-                //Is the other dot matches?
-                if (otherDot.isMatched && otherDot.tag == matchType.color)
+                Gem otherGem = board.currentGem.otherGem.GetComponent<Gem>();
+                //Is the other gem matched?
+                if (otherGem.isMatched && otherGem.tag == matchType.color)
                 {
                     // make it unmatched
-                    otherDot.isMatched = false;
+                    otherGem.isMatched = false;
                     if ((board.currentGem.SwipeAngle > -45 && board.currentGem.SwipeAngle <= 45)
                     || (board.currentGem.SwipeAngle < -135 || board.currentGem.SwipeAngle >= 135))
                     {
-                        otherDot.MakeRowBomb();
+                        otherGem.MakeRowBomb();
                        
                     }
                     else
                     {
-                        otherDot.MakeColumnBomb();
+                        otherGem.MakeColumnBomb();
                     }
                 }
             }

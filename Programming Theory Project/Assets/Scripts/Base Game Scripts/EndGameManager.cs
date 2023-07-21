@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+// this Script determines which Gamemode to setup, adjust UI according to GameMode, activates EndGame panels to win or loss, etc
 public enum GameMode
 {
     Moves,
@@ -23,11 +24,14 @@ public class EndGameManager : MonoBehaviour
     public GameObject timeLabel;
     public GameObject youWinPanel;
     public GameObject tryAgainPanel;
+    public GameObject endofDemoPanel;
     public TMP_Text counter; 
     public GameModeSetting gameModeSetting;
     public int currentCounterValue;
     private Board board;
     private FadePanelController fadePanelController;
+    private BackToSplash backToSplash;
+    private GameData gameData;
     private float timerSeconds;
     
     // Start is called before the first frame update
@@ -35,6 +39,8 @@ public class EndGameManager : MonoBehaviour
     {
         board = FindObjectOfType<Board>();
         fadePanelController = FindObjectOfType<FadePanelController>();
+        backToSplash = FindObjectOfType<BackToSplash>();
+        gameData = FindObjectOfType<GameData>();
         SetGameMode();
         SetupGame();
         
@@ -90,7 +96,14 @@ public class EndGameManager : MonoBehaviour
 
     public void WinGame()
     {
-        youWinPanel.SetActive(true);
+        if (gameData.saveData.isActive[backToSplash.maxLevel - 1])
+        {
+            endofDemoPanel.SetActive(true);
+        }
+        else
+        {
+            youWinPanel.SetActive(true);
+        } 
         board.currentState = GameState.win;
         currentCounterValue = 0;
         counter.text = "" + currentCounterValue;

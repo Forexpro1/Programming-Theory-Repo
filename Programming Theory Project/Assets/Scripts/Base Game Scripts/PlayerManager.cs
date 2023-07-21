@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// needs to be implement still for additional players
+
 public enum GemOwner
 {
     player1,

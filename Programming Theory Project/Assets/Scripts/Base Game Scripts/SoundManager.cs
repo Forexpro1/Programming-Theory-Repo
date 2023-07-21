@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
+
+    // this takes care of all music an sound in game
+
     public AudioSource[] destroyNoise;
     public AudioSource backgroundMusic;
 

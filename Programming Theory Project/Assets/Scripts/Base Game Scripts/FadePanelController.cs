@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// this controls the animation on the canvas that works like a Fade in/out panel. Contains a method for the GameInfoPanel ok button
 public class FadePanelController : MonoBehaviour
 {
 

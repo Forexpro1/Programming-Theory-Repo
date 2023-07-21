@@ -5,6 +5,8 @@ using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
+// This Script Makes it possible to save data between sessions. SINGLETON !!
+
 [Serializable]
 public class SaveData
 {
@@ -66,7 +68,7 @@ public class GameData : MonoBehaviour
             FileStream file = File.Open(Application.persistentDataPath + "/player.dat", FileMode.Open);
             saveData = formatter.Deserialize(file) as SaveData;
             file.Close();
-            Debug.Log("Loaded");
+           // Debug.Log("Loaded");
         }
     }
 
@@ -78,11 +80,5 @@ public class GameData : MonoBehaviour
     private void OnDisable()
     {
         Save();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

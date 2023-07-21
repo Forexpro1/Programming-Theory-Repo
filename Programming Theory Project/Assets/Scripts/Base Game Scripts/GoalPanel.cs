@@ -4,6 +4,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
+// This is place on the Goal Panel Prefab to add function
+
 public class GoalPanel : MonoBehaviour
 {
     public Image thisImage;

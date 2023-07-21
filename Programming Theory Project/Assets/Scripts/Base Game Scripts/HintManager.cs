@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+// This helps the player find random clues towards finding another match
+
 public class HintManager : MonoBehaviour
 {
     private Board board;

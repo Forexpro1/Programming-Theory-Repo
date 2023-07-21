@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+//Used on all Level Buttons to determine level #, which image to use, stars activated, etc
+
 public class LevelButton : MonoBehaviour
 {
     [Header("Button Data")]

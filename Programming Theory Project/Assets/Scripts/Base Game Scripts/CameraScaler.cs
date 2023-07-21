@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// This is used on Camera to adjust the view based on row and column pieces
 public class CameraScaler : MonoBehaviour
 {
     private Board board;

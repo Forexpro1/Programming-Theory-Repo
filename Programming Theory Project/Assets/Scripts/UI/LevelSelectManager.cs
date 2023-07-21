@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// used for providing functions for the buttons on level select scene
+
 public class LevelSelectManager : MonoBehaviour
 {
-
+    
     public GameObject[] panels;
     public GameObject currentPanel;
     public int page;

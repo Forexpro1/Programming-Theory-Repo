@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /* ATTENTION! SOME CREDIT GOES TO "MISTER TAFT CREATES" FOR  HIS TURORIAL ON 3D MATCH PUZZLES FOR THE INITIAL SETUP OF HOW TO CODE SUCH A GAME.
- * OUR CODES HAVE SIMLIAR WORKFLOWS, BUT I CHANGED MANY BEHAVIORS.
+ * OUR CODES HAVE SIMLIAR WORKFLOWS, BUT I'VE CHANGED MANY BEHAVIORS.
  * HE CAN BE FOUND ON "YOUTUBE" FOR REFERENCE.  
  * */
-
+ // The Board is used as the main Script to handle the playingBoard.
 public enum GameState
 {
     wait,
@@ -80,6 +80,7 @@ public class Board : MonoBehaviour
 
     public int basePieceValue = 20;
     public int[] scoreGoals;
+   
 
     [HideInInspector]
     public MatchType matchType;
@@ -478,9 +479,17 @@ public class Board : MonoBehaviour
             GameObject particle = Instantiate(destroyEffect, playingBoard[column,row].transform.position, Quaternion.identity);
             Destroy(particle, particleDestoryEffectDelay);
 
+            Rigidbody2D rb = playingBoard[column, row].GetComponent<Gem>().rb;
+            rb.bodyType = RigidbodyType2D.Dynamic;
+            rb.gameObject.GetComponent<Collider2D>().enabled = false;
+            Vector2 randomForceVector = new Vector2(Random.Range(-5, 5), Random.Range(-3, 10));
+            rb.AddForce(randomForceVector, ForceMode2D.Impulse);
+            rb.angularVelocity = Random.Range(-20, 20);
+
             // Destroying Gem at location and updating Score.
-            Destroy(playingBoard[column, row], .5f);
-            playingBoard[column, row].GetComponent<Gem>().PopAnimation();
+            Destroy(playingBoard[column, row], 3f);
+            //playingBoard[column, row].GetComponent<Gem>().PopAnimation();
+            
             scoreManager.IncreaseScore(basePieceValue * streakValue);
             playingBoard[column, row] = null;
         }
@@ -948,7 +957,7 @@ public class Board : MonoBehaviour
         }
     }
 
-    // These method used in MatchManager
+    // These methods are used in MatchManager unless I make public concreteTiles[] and slimeTiles[]
     public void BombRowAffectingSpecialTiles(int row)
     {
         for (int i = 0; i < width; i++)

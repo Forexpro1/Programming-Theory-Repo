@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
+// Used to add all Stats from the gamedata(savedata) to the confirmPanel and determinds which level to load 
+
 public class ConfirmPanel : MonoBehaviour
 {
     [Header("Level Information")]

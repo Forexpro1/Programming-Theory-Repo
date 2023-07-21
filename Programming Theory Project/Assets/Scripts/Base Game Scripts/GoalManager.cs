@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//This manages and checks if all goals/quest are met in game. If so then lets endgame manager do its functions.
+
 [System.Serializable]
 public class LevelGoalSetting
 {

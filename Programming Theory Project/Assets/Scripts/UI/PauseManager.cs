@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+// adds functions to the pause menu mini panel
+
 public class PauseManager : MonoBehaviour
 {
     public GameObject pausePanel;
@@ -23,6 +25,7 @@ public class PauseManager : MonoBehaviour
         
         // In Player Prefs, the "Sound" key is for sound
         // If sound == 0, then mute, if sound == 1, then Unmute
+
         if (PlayerPrefs.HasKey("Sound"))
         {
             if (PlayerPrefs.GetInt("Sound") == 0)
@@ -86,8 +89,8 @@ public class PauseManager : MonoBehaviour
         paused = !paused;
     }
 
-    public void ExitGame()
+    public void ExitLevel()
     {
-        SceneManager.LoadScene("Splash");
+        SceneManager.LoadScene("Level Select");
     }
 }

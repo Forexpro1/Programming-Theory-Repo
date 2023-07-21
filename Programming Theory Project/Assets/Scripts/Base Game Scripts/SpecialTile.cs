@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// This is the Base Script for other child class to derive from.
+
 public class SpecialTile : MonoBehaviour
 {
     public int hitPoints;

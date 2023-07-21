@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+// this manages and updates the ScoreBoard
 
 public class ScoreManager : MonoBehaviour
 {
